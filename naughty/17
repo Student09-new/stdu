@@ -1,0 +1,86 @@
+CREATE DATABASE IF NOT EXISTS product_db;
+
+USE product_db;
+
+DROP PROCEDURE IF EXISTS update_product_status;
+
+DROP TABLE IF EXISTS Product;
+
+CREATE TABLE Product(
+    prod_id INT PRIMARY KEY,
+    prod_name VARCHAR(50),
+    quantity INT,
+    price INT,
+    status VARCHAR(30)
+);
+
+INSERT INTO Product VALUES
+(1,'Laptop',15,50000,NULL),
+(2,'Mouse',5,500,NULL),
+(3,'Keyboard',0,1200,NULL),
+(4,'Monitor',25,7000,NULL),
+(5,'Printer',8,9000,NULL);
+
+SHOW TABLES;
+
+SELECT * FROM Product;
+
+DELIMITER //
+
+CREATE PROCEDURE update_product_status()
+BEGIN
+
+    DECLARE done INT DEFAULT FALSE;
+
+    DECLARE p_id INT;
+    DECLARE p_quantity INT;
+
+    DECLARE prod_cursor CURSOR FOR
+    SELECT prod_id, quantity
+    FROM Product;
+
+    DECLARE CONTINUE HANDLER
+    FOR NOT FOUND SET done = TRUE;
+
+    OPEN prod_cursor;
+
+    read_loop: LOOP
+
+        FETCH prod_cursor
+        INTO p_id, p_quantity;
+
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF p_quantity > 10 THEN
+
+            UPDATE Product
+            SET status = 'In Stock'
+            WHERE prod_id = p_id;
+
+        ELSEIF p_quantity BETWEEN 1 AND 10 THEN
+
+            UPDATE Product
+            SET status = 'Limited Stock'
+            WHERE prod_id = p_id;
+
+        ELSE
+
+            UPDATE Product
+            SET status = 'Out of Stock'
+            WHERE prod_id = p_id;
+
+        END IF;
+
+    END LOOP;
+
+    CLOSE prod_cursor;
+
+END //
+
+DELIMITER ;
+
+CALL update_product_status();
+
+SELECT * FROM Product;

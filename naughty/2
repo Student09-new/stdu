@@ -1,0 +1,73 @@
+CREATE DATABASE IF NOT EXISTS employee_db;
+USE employee_db;
+DROP TABLE IF EXISTS Works;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Company;
+CREATE TABLE Employee(
+    employee_name VARCHAR(50),
+    street VARCHAR(50),
+    city VARCHAR(50)
+);
+CREATE TABLE Company(
+    company_name VARCHAR(50),
+    city VARCHAR(50)
+);
+CREATE TABLE Works(
+    employee_name VARCHAR(50),
+    company_name VARCHAR(50),
+    salary INT
+);
+INSERT INTO Employee VALUES
+('Rahul','MG Road','Pune'),
+('Amit','FC Road','Mumbai'),
+('Sneha','JM Road','Delhi'),
+('Karan','ABC Road','Pune');
+INSERT INTO Company VALUES
+('FBC','Pune'),
+('Small Bank Corporation','Mumbai'),
+('Alpha Ltd','Delhi'),
+('Tata','Pune');
+INSERT INTO Works VALUES
+('Rahul','FBC',15000),
+('Amit','Small Bank Corporation',9000),
+('Sneha','Alpha Ltd',25000),
+('Karan','FBC',12000);
+SELECT employee_name
+FROM Works
+WHERE company_name='FBC';
+SELECT e.employee_name, e.street, e.city
+FROM Employee e, Works w
+WHERE e.employee_name = w.employee_name
+AND w.company_name='FBC'
+AND w.salary > 10000;
+SELECT employee_name
+FROM Works
+WHERE salary > ALL(
+    SELECT salary
+    FROM Works
+    WHERE company_name='Small Bank Corporation'
+);
+SELECT company_name
+FROM Works
+GROUP BY company_name
+ORDER BY SUM(salary)
+LIMIT 1;
+UPDATE Company
+SET company_name='Infosys'
+WHERE city='Pune';
+SELECT company_name
+FROM Company
+WHERE company_name LIKE 'A%';
+SELECT company_name
+FROM Company
+WHERE company_name LIKE '%a';
+SELECT company_name
+FROM Company
+WHERE company_name LIKE '%ta%';
+SHOW TABLES;
+DESC Employee;
+DESC Company;
+DESC Works;
+SELECT * FROM Employee;
+SELECT * FROM Company;
+SELECT * FROM Works;
