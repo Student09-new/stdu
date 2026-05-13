@@ -1,0 +1,63 @@
+CREATE DATABASE IF NOT EXISTS company_db;
+USE company_db;
+DROP VIEW IF EXISTS employee_view;
+DROP TABLE IF EXISTS Duty_allocation;
+DROP TABLE IF EXISTS Position_tbl;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Employee_seq;
+CREATE TABLE Employee(
+    emp_no INT PRIMARY KEY,
+    name VARCHAR(50),
+    skill VARCHAR(50),
+    pay_rate INT
+);
+CREATE TABLE Position_tbl(
+    posting_no INT PRIMARY KEY,
+    skill VARCHAR(50)
+);
+CREATE TABLE Duty_allocation(
+    posting_no INT,
+    emp_no INT,
+    day VARCHAR(20),
+    shift_type VARCHAR(20)
+);
+INSERT INTO Employee VALUES
+(1,'Rahul','Java',5000),
+(2,'Amit','Python',7000),
+(3,'Sneha','C++',6000);
+INSERT INTO Position_tbl VALUES
+(101,'Java'),
+(102,'Python'),
+(103,'C++');
+INSERT INTO Duty_allocation VALUES
+(101,1,'Monday','Day'),
+(102,2,'Tuesday','Night'),
+(103,3,'Wednesday','Day');
+SHOW TABLES;
+SELECT * FROM Employee;
+SELECT * FROM Position_tbl;
+SELECT * FROM Duty_allocation;
+CREATE INDEX emp_index
+ON Employee(emp_no);
+SHOW INDEX FROM Employee;
+ALTER TABLE Employee
+ADD city VARCHAR(30);
+DESC Employee;
+CREATE VIEW employee_view AS
+SELECT emp_no, pay_rate
+FROM Employee;
+SELECT * FROM employee_view;
+CREATE TABLE Employee_seq(
+    emp_no INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50)
+);
+INSERT INTO Employee_seq(name)
+VALUES
+('Rahul'),
+('Amit'),
+('Sneha');
+SELECT * FROM Employee_seq;
+TRUNCATE TABLE Duty_allocation;
+SELECT * FROM Duty_allocation;
+DROP TABLE Position_tbl;
+SHOW TABLES;

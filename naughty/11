@@ -1,0 +1,63 @@
+CREATE DATABASE IF NOT EXISTS employee_duty_db;
+USE employee_duty_db;
+DROP TABLE IF EXISTS Duty_allocation;
+DROP TABLE IF EXISTS Position_tbl;
+DROP TABLE IF EXISTS Employee;
+CREATE TABLE Employee(
+    emp_no INT PRIMARY KEY,
+    name VARCHAR(50),
+    skill VARCHAR(50),
+    pay_rate INT
+);
+CREATE TABLE Position_tbl(
+    posting_no INT PRIMARY KEY,
+    skill VARCHAR(50)
+);
+CREATE TABLE Duty_allocation(
+    posting_no INT,
+    emp_no INT,
+    duty_date DATE,
+    shift_type VARCHAR(20)
+);
+INSERT INTO Employee VALUES
+(123459,'Rahul','Java',9000),
+(123460,'Amit','Python',7000),
+(123461,'XYZ','Java',8000),
+(123462,'Sneha','C++',6000),
+(123463,'Karan','Python',5000);
+INSERT INTO Position_tbl VALUES
+(101,'Java'),
+(102,'Python'),
+(103,'C++');
+INSERT INTO Duty_allocation VALUES
+(101,123461,'1986-04-10','Day'),
+(102,123460,'1986-04-15','Night'),
+(103,123462,'1986-05-01','Day');
+SHOW TABLES;
+SELECT * FROM Employee;
+SELECT * FROM Position_tbl;
+SELECT * FROM Duty_allocation;
+SELECT *
+FROM Duty_allocation;
+SELECT *
+FROM Duty_allocation
+WHERE emp_no = 123461
+AND MONTH(duty_date)=4
+AND YEAR(duty_date)=1986;
+SELECT name, pay_rate
+FROM Employee
+WHERE emp_no < 123460
+AND pay_rate > SOME(
+    SELECT pay_rate
+    FROM Employee
+    WHERE emp_no >= 123460
+);
+SELECT *
+FROM Employee
+WHERE pay_rate = (
+    SELECT MIN(pay_rate)
+    FROM Employee
+);
+SELECT e.name, e.pay_rate
+FROM Employee e, Duty_allocation d
+WHERE e.emp_no = d.emp_no;

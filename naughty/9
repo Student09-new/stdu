@@ -1,0 +1,64 @@
+CREATE DATABASE IF NOT EXISTS booking_db;
+USE booking_db;
+DROP TRIGGER IF EXISTS booking_insert_trigger;
+DROP TRIGGER IF EXISTS booking_update_trigger;
+DROP TRIGGER IF EXISTS booking_delete_trigger;
+DROP TABLE IF EXISTS Payment;
+DROP TABLE IF EXISTS Booking;
+CREATE TABLE Booking(
+    booking_id INT PRIMARY KEY,
+    booking_name VARCHAR(50),
+    amount INT
+);
+CREATE TABLE Payment(
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT,
+    amount INT
+);
+SELECT * FROM Booking;
+SELECT * FROM Payment;
+DELIMITER //
+CREATE TRIGGER booking_insert_trigger
+AFTER INSERT
+ON Booking
+FOR EACH ROW
+BEGIN
+    INSERT INTO Payment(booking_id, amount)
+    VALUES(NEW.booking_id, NEW.amount);
+END //
+DELIMITER ;
+INSERT INTO Booking VALUES
+(1,'Rahul',5000),
+(2,'Amit',7000);
+SELECT * FROM Booking;
+SELECT * FROM Payment;
+DELIMITER //
+CREATE TRIGGER booking_update_trigger
+AFTER UPDATE
+ON Booking
+FOR EACH ROW
+BEGIN
+    UPDATE Payment
+    SET amount = NEW.amount
+    WHERE booking_id = NEW.booking_id;
+END //
+DELIMITER ;
+UPDATE Booking
+SET amount = 9000
+WHERE booking_id = 1;
+SELECT * FROM Booking;
+SELECT * FROM Payment;
+DELIMITER //
+CREATE TRIGGER booking_delete_trigger
+AFTER DELETE
+ON Booking
+FOR EACH ROW
+BEGIN
+    DELETE FROM Payment
+    WHERE booking_id = OLD.booking_id;
+END //
+DELIMITER ;
+DELETE FROM Booking
+WHERE booking_id = 2;
+SELECT * FROM Booking;
+SELECT * FROM Payment;

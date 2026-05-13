@@ -1,0 +1,63 @@
+CREATE DATABASE IF NOT EXISTS project_db;
+USE project_db;
+DROP TABLE IF EXISTS Assigned_To;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Project;
+CREATE TABLE Project(
+    project_id VARCHAR(10) PRIMARY KEY,
+    proj_name VARCHAR(50),
+    chief_arch VARCHAR(50)
+);
+CREATE TABLE Employee(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50)
+);
+CREATE TABLE Assigned_To(
+    project_id VARCHAR(10),
+    emp_id INT
+);
+INSERT INTO Project VALUES
+('C353','Database Project','Rahul'),
+('C453','AI Project','Amit'),
+('C553','Web Project','Sneha');
+INSERT INTO Employee VALUES
+(1,'Karan'),
+(2,'Rohit'),
+(3,'Priya'),
+(4,'Neha');
+INSERT INTO Assigned_To VALUES
+('C353',1),
+('C353',2),
+('C453',2),
+('C553',2),
+('C453',3);
+SHOW TABLES;
+SELECT * FROM Project;
+SELECT * FROM Employee;
+SELECT * FROM Assigned_To;
+SELECT emp_id
+FROM Assigned_To
+WHERE project_id='C353';
+SELECT e.*
+FROM Employee e, Assigned_To a
+WHERE e.emp_id = a.emp_id
+AND a.project_id='C353';
+SELECT e.*
+FROM Employee e, Assigned_To a, Project p
+WHERE e.emp_id = a.emp_id
+AND a.project_id = p.project_id
+AND p.proj_name='Database Project';
+SELECT emp_id
+FROM Employee
+WHERE emp_id NOT IN(
+    SELECT emp_id
+    FROM Assigned_To
+    WHERE project_id='C453'
+);
+SELECT emp_id
+FROM Assigned_To
+GROUP BY emp_id
+HAVING COUNT(DISTINCT project_id)=(
+    SELECT COUNT(*)
+    FROM Project
+);

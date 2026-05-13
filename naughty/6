@@ -1,0 +1,55 @@
+CREATE DATABASE IF NOT EXISTS employee_plsql_db;
+USE employee_plsql_db;
+DROP TABLE IF EXISTS Employee;
+CREATE TABLE Employee(
+    EMPNO INT PRIMARY KEY,
+    ENAME VARCHAR(50),
+    JOB VARCHAR(50),
+    MGR INT,
+    HIREDATE DATE,
+    SAL INT,
+    COMM INT,
+    DEPTNO INT
+);
+INSERT INTO Employee VALUES
+(101,'Rahul','Manager',100,'2022-01-10',12000,500,10),
+(102,'Amit','Clerk',101,'2023-02-15',8000,300,20),
+(103,'Sneha','Analyst',100,'2021-05-20',15000,700,30),
+(104,'Karan','Salesman',101,'2024-03-01',9000,200,10);
+SELECT * FROM Employee;
+DROP PROCEDURE IF EXISTS update_salary;
+DELIMITER //
+CREATE PROCEDURE update_salary()
+BEGIN
+
+    UPDATE Employee
+    SET SAL =
+    CASE
+        WHEN SAL > 10000 THEN SAL + (SAL * 0.06)
+        ELSE SAL + (SAL * 0.05)
+    END;
+END //
+DELIMITER ;
+CALL update_salary();
+SELECT * FROM Employee;
+DROP FUNCTION IF EXISTS salary_increment;
+DELIMITER //
+CREATE FUNCTION salary_increment(old_salary INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE new_salary INT;
+    IF old_salary > 10000 THEN
+        SET new_salary = old_salary + (old_salary * 0.06);
+    ELSE
+        SET new_salary = old_salary + (old_salary * 0.05);
+    END IF;
+
+    RETURN new_salary;
+END //
+DELIMITER ;
+SELECT EMPNO,
+ENAME,
+SAL AS old_salary,
+salary_increment(SAL) AS new_salary
+FROM Employee;
